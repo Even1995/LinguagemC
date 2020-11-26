@@ -1,0 +1,568 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define SIZE 200
+#include <time.h>
+#include <conio.h>
+
+
+
+struct  dataDiagnostico{
+    int dia;
+    int mes;
+    int ano;
+};
+
+struct  dataNascimento{
+    int dia;
+    int mes;
+    int ano;
+};
+
+struct  endereco{
+    char rua[40];
+    int numero;
+    char bairro[40];
+    char cidade[40];
+    char estado[3];
+    int cep;
+};
+
+struct comorbidadePaciente{
+    char diabetes[2];
+    char obesidade[2];
+    char hipertensao[2];
+    char tuberculose[2];
+    char casoTemOutro[200];
+};
+
+
+int op;
+
+int main()
+{
+    int inicio = 0;
+    printf(" ________________\n");
+    printf("| Bem vindo Team |\n\n");
+
+    printf("Funcionario Escolhe a opcao : \n\n");
+
+    printf("Opcao 0 para Logar \n");
+    printf("Opcao 1 para Cadastro de novo usuario \n");
+    printf("Opcao 2 para Sair\n");
+
+    printf("Opcao : "); scanf("%inicio" , &inicio);
+
+
+    if(inicio == 0){
+     Login();
+    }
+    else if(inicio == 1){
+     CadastroNovoUsuario();
+    }
+    else if(inicio == 2){
+        return 0;
+    }
+    else{
+        printf("Opcao invalida !!!\n");
+        main();
+    }
+
+    return 0;
+}
+
+void CadastroNovoUsuario(void){
+    FILE *pont_arq;
+    char nome[30];
+    char sobreNome[30];
+    char usuario[30];
+    char senha[30];
+    char sapo[20];
+
+    pont_arq = fopen("cadastro_usuario.txt", "wt");
+
+    printf("Nome: ");scanf("%s", &nome);
+    printf("SobreNome: ");scanf("%s", &sobreNome);
+    printf("Usuario: ");scanf("%s", &usuario);
+    printf("Senha: ");fflush(stdin);
+
+    for(int i=0;i<8;i++)
+    {
+        senha[i] = getch();
+        putchar('*');
+    }
+    printf("\n");
+
+
+
+
+    if(senha != NULL){
+        fprintf(pont_arq, "%s\n", nome);
+        fprintf(pont_arq, "%s\n", sobreNome);
+        fprintf(pont_arq, "%s\n", usuario);
+        fprintf(pont_arq, "%s\n", senha);
+        fclose(pont_arq);
+
+        printf("Sucesso!\nUsuario cadastrado\n________________________\nClique Enter para continuar\n");
+        getch();
+        system("cls");
+
+        return main();
+
+    }else{
+        printf("Houve um erro para cadastrar. \nPoderia preencher os dados novamente.\n\n");
+        printf("Cadastra novamente!\n");
+        return CadastroNovoUsuario();
+    }
+}
+
+int Login(){
+    FILE *pont_arq;
+    pont_arq = fopen("cadastro_usuario.txt", "rt");
+
+    char login[30];
+    char senhas[30];
+    char text[30];
+    char  usuario[30];
+    char senha[30];
+    char *buscarUsuario;
+    char nome[30];
+    int i;
+    int validar = 0;
+
+    printf("Digite seu usuario de login:");scanf("%s", &login);
+    printf("Digite a senha:");fflush(stdin);
+
+    for(int i=0;i<8;i++)
+    {
+        senhas[i] = getch();
+        putchar('*');
+    }
+    i = 1;
+    while(!feof(pont_arq))
+    {
+        buscarUsuario = fgets(text, 50, pont_arq);
+        if(buscarUsuario){
+            if(i == 1){
+                strcpy(nome, text);
+            }
+            if(i == 3){
+                strcpy(usuario , text);
+                }
+            if(i > 3){
+                strcpy(senha, text);
+                }
+            i++;
+        }
+    }
+    fclose(pont_arq);
+
+    if(strcmp(login, usuario) && strcmp(senhas, senha))
+    {
+        printf("\n\nBem vindo %s\n", &nome);
+        printf("Vamos comercar!");
+        getchar();
+        Menu();
+    }
+    else{
+        printf("\nFalha no login, tente novamente\n");
+        Login();
+    }
+
+}
+
+int Menu(){
+    do{
+    	system("cls");
+    	printf("\n----Menu----\n1 - Cadastrar\n2 - Listar todos\n3 - Atualizar\n4 - Sair\n");
+    	printf("opcao: ");scanf("%d", &op);
+    	switch(op){
+    		case 1:
+    			cadastro();
+    			break;
+    		case 2:
+				lista();
+				break;
+			case 3:
+			    atualiza();
+				break;
+			case 4:
+			    system("exit");
+			    break;
+			default:
+			    printf("Opcao invalida");
+			    break;
+	}
+    }while(op!=4);
+}
+
+
+struct cadastroPacienteCovid{
+char nome[50];
+char sexo[1];
+char telefone[11];
+char cpf[11];
+
+struct  dataNascimento nascimentoPaciente;
+struct  endereco enderecoPaciente;
+struct  dataDiagnostico dataDiagnosticoPaciente;
+struct  comorbidadePaciente comorbidadePaciente;
+}cadastroPaciente;
+
+int cadastro(void){
+    FILE *paciente_arq;
+    FILE *paciente_arq_risco;
+
+    paciente_arq = fopen("cadastro_paciente.txt", "w");
+    paciente_arq_risco = fopen("cadastro_paciente_risco.txt", "w");
+
+    system("cls");
+  int quantidade, i;
+  printf("\nQuantos pacientes serao cadastrados: ");scanf("%d", &quantidade);
+
+  for(i = 0; i < quantidade; i ++){
+    printf("\n\n-------Cadastro dos pacientes------------\n\n");
+    printf("Paciente numero: %d\n", &i);
+
+    printf("Nome do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.nome, 20, stdin);
+    printf("Sexo do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.sexo, 2, stdin);
+    printf("Telefone do Paciente com DDD: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.telefone, 11, stdin);
+    printf("CPF do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.cpf, 11, stdin);
+    printf("Dia de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.dia);
+    printf("Mes de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.mes);
+    printf("Ano de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.ano);
+    printf("Rua do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.rua, 40, stdin);
+    printf("Numero da casa do Paciente: ");
+    scanf("%d", &cadastroPaciente.enderecoPaciente.numero);
+    printf("Bairro do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.bairro, 40, stdin);
+    printf("Cidade do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.cidade, 40, stdin);
+    printf("Estado do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.estado, 3, stdin);
+    printf("Cep da casa do Paciente: ");
+    scanf("%d", &cadastroPaciente.enderecoPaciente.cep);
+    printf("Dia do diagnostico do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.dia);
+    printf("Mes do diagnostico do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.mes);
+    printf("Ano do diagnostico do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.ano);
+    printf("Comorbidade do Paciente responda s/n\n");
+    printf("O paciente tem Diabetes: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.diabetes, 2, stdin);
+    printf("O paciente tem obesidade: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.obesidade, 2, stdin);
+    printf("O paciente tem hipertensao: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.hipertensao, 2, stdin);
+    printf("O paciente tem tuberculose: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.tuberculose, 2, stdin);
+    printf("O paciente tem outros tipos de comorbidade?\nInforma outro comorbidade :");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.casoTemOutro, 20, stdin);
+  }
+
+  for (i = 0; i < quantidade; i++){
+    fprintf(paciente_arq, "\nNumeroPaciente: %d", &i);
+    fprintf(paciente_arq, "\nNome: %s", cadastroPaciente.nome);
+    fprintf(paciente_arq, "\nSexo: %s", cadastroPaciente.sexo);
+    fprintf(paciente_arq, "\nCPF: %s", cadastroPaciente.cpf);
+    fprintf(paciente_arq, "\nTelefone: %s", cadastroPaciente.telefone);
+    fprintf(paciente_arq, "\nData de nascimento: %d/%d/%d", cadastroPaciente.nascimentoPaciente.dia, cadastroPaciente.nascimentoPaciente.mes, cadastroPaciente.nascimentoPaciente.ano);
+    fprintf(paciente_arq, "\nRua: %s", cadastroPaciente.enderecoPaciente.rua);
+    fprintf(paciente_arq, "\nNumero: %d", cadastroPaciente.enderecoPaciente.numero );
+    fprintf(paciente_arq, "\nBairro: %s", cadastroPaciente.enderecoPaciente.bairro);
+    fprintf(paciente_arq, "\nCidade: %s", cadastroPaciente.enderecoPaciente.cidade);
+    fprintf(paciente_arq, "\nEstado: %s", cadastroPaciente.enderecoPaciente.estado);
+    fprintf(paciente_arq, "\nCep: %d", cadastroPaciente.enderecoPaciente.cep);
+    fprintf(paciente_arq, "\nData de diagnostico: %d/%d/%d", cadastroPaciente.dataDiagnosticoPaciente.dia, cadastroPaciente.dataDiagnosticoPaciente.mes, cadastroPaciente.dataDiagnosticoPaciente.ano);
+    fprintf(paciente_arq, "\nDiabetes: %s", cadastroPaciente.comorbidadePaciente.diabetes);
+    fprintf(paciente_arq, "\nObesidade: %s", cadastroPaciente.comorbidadePaciente.obesidade);
+    fprintf(paciente_arq, "\nHipertensao: %s", cadastroPaciente.comorbidadePaciente.hipertensao);
+    fprintf(paciente_arq, "\nTuberculose: %s", cadastroPaciente.comorbidadePaciente.tuberculose);
+    fprintf(paciente_arq, "Outra comorbidade: %s\n", cadastroPaciente.comorbidadePaciente.casoTemOutro);
+
+    fclose(paciente_arq);
+  }
+    int validarIdade = cadastroPaciente.nascimentoPaciente.ano;
+if(validarIdade != 0){
+
+    time_t agora;
+    int anoAtual;
+
+    agora = time(NULL);
+      struct tm tm = *localtime(&agora);
+      anoAtual = tm.tm_year + 1900;
+        int validar = anoAtual - validarIdade;
+    if(validar > 65){
+        fprintf(paciente_arq_risco, "\nData de nascimento: %d/%d/%d\n", cadastroPaciente.nascimentoPaciente.dia, cadastroPaciente.nascimentoPaciente.mes, cadastroPaciente.nascimentoPaciente.ano);
+        fprintf(paciente_arq_risco, "Cep: %d\n", cadastroPaciente.enderecoPaciente.cep);
+        fclose(paciente_arq_risco);
+
+        getchar();
+        system("cls");
+        printf("Realizado a atualizacao do cadastro"); DataCadastroPacienete();
+        getchar();
+        getchar();
+        system("cls");
+        Menu();
+    }
+    else{
+     getchar();
+     system("cls");
+     printf("Realizado a atualizacao do cadastro"); DataCadastroPacienete();
+     getchar();
+     getchar();
+     system("cls");
+     Menu();
+    }
+  }
+}
+
+void lista(void){
+    printf("\n1 - Lista Paciente\n2 - Listar Paciebte em risco\n3 - Voltar ao menu\n4 - Sair\n");
+    printf("opcao: ");scanf("%d", &op);
+
+    switch(op){
+        case 1:
+            listaPaciente();
+        break;
+        case 2:
+            listaPacienteRisco();
+        break;
+        case 3:
+            Menu();
+        break;
+        default:
+           system("exit");
+        break;
+
+    }
+
+}
+getchar();
+getchar();
+
+void atualiza(void) {
+    printf("\n1 - Atualizar o registro\n2 - Voltar ao menu\n3 - Sair\n");
+    printf("opcao: ");scanf("%d", &op);
+
+    switch(op){
+        case 1:
+            atualizaPaciente();
+        break;
+        case 2:
+            Menu();
+        break;
+        default:
+           system("exit");
+        break;
+
+    }
+}
+
+
+int listaPaciente(){
+    FILE *pont_arq_cadastro_paciente;
+    pont_arq_cadastro_paciente = fopen("cadastro_paciente.txt", "r");
+    char retorno[20];
+
+
+    while(fgets(retorno, 20, pont_arq_cadastro_paciente))
+    printf("%s", retorno);
+
+    fclose(pont_arq_cadastro_paciente);
+
+    getch();
+}
+
+int listaPacienteRisco(){
+    FILE *pont_arq_cadastro_paciente_risco;
+    pont_arq_cadastro_paciente_risco = fopen("cadastro_paciente_risco.txt", "r");
+    char retorno[20];
+
+    while(fgets(retorno, 20, pont_arq_cadastro_paciente_risco))
+    printf("%s", retorno);
+
+    fclose(pont_arq_cadastro_paciente_risco);
+
+    getch();
+
+}
+
+int atualizaPaciente(){
+    FILE *pont_arq_cadastro_paciente, *pont_arq_cadastro_paciente_risco;
+    pont_arq_cadastro_paciente = fopen("cadastro_paciente.txt", "a");
+    pont_arq_cadastro_paciente_risco = fopen("cadastro_paciente_risco.txt", "a");
+
+    atualizarCadastro();
+
+    fclose(pont_arq_cadastro_paciente);
+}
+
+int atualizarCadastro(void){
+    FILE *paciente_arq;
+    FILE *paciente_arq_risco;
+
+    paciente_arq = fopen("cadastro_paciente.txt", "a");
+    paciente_arq_risco = fopen("cadastro_paciente_risco.txt", "a");
+
+    system("cls");
+    int quantidade, i;
+    printf("\nQuanto paciente sera cadastrado: ");scanf("%d", &quantidade);
+
+  for(i = 0; i < quantidade; i ++){
+    printf("\n\n-------Cadastro dos pacientes------------\n\n");
+    printf("Paciente numero: %d\n", &i);
+
+    printf("Nome do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.nome, 20, stdin);
+    printf("Sexo do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.sexo, 2, stdin);
+    printf("Telefone do Paciente com DDD: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.telefone, 11, stdin);
+    printf("CPF do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.cpf, 12, stdin);
+    printf("Dia de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.dia);
+    printf("Mes de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.mes);
+    printf("Ano de nascimento do Paciente: ");
+    scanf("%d", &cadastroPaciente.nascimentoPaciente.ano);
+    printf("Rua do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.rua, 40, stdin);
+    printf("Numero da casa do Paciente: ");
+    scanf("%d", &cadastroPaciente.enderecoPaciente.numero);
+    printf("Bairro do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.bairro, 40, stdin);
+    printf("Cidade do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.cidade, 40, stdin);
+    printf("Estado do Paciente: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.enderecoPaciente.estado, 3, stdin);
+    printf("Cep da casa do Paciente: ");
+    scanf("%d", &cadastroPaciente.enderecoPaciente.cep);
+    printf("Dia de diagnostique do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.dia);
+    printf("Mes de diagnostique do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.mes);
+    printf("Ano de diagnostique do Paciente: ");
+    scanf("%d", &cadastroPaciente.dataDiagnosticoPaciente.ano);
+    printf("Comorbidade do Paciente responda s/n\n");
+    printf("O paciente tem Diabetes: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.diabetes, 2, stdin);
+    printf("O paciente tem obesidade: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.obesidade, 2, stdin);
+    printf("O paciente tem hipertensao: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.hipertensao, 2, stdin);
+    printf("O paciente tem tuberculose: ");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.tuberculose, 2, stdin);
+    printf("O paciente tem outros forma de comorbidade?\nInforma outro comorbidade :");
+    fflush(stdin);
+    fgets(cadastroPaciente.comorbidadePaciente.casoTemOutro, 20, stdin);
+
+  }
+
+  for (i = 0; i < quantidade; i++){
+    fprintf(paciente_arq, "\n%s", "************************");
+    fprintf(paciente_arq, "\nNumeroPaciente: %d", &i);
+    fprintf(paciente_arq, "\nNome: %s", cadastroPaciente.nome);
+    fprintf(paciente_arq, "\nSexo: %s", cadastroPaciente.sexo);
+    fprintf(paciente_arq, "\nCPF: %s", cadastroPaciente.cpf);
+    fprintf(paciente_arq, "\nTelefone: %s", cadastroPaciente.telefone);
+    fprintf(paciente_arq, "\nData de nascimento: %d/%d/%d", cadastroPaciente.nascimentoPaciente.dia, cadastroPaciente.nascimentoPaciente.mes, cadastroPaciente.nascimentoPaciente.ano);
+    fprintf(paciente_arq, "\nRua: %s", cadastroPaciente.enderecoPaciente.rua);
+    fprintf(paciente_arq, "\nNumero: %d", cadastroPaciente.enderecoPaciente.numero );
+    fprintf(paciente_arq, "\nBairro: %s", cadastroPaciente.enderecoPaciente.bairro);
+    fprintf(paciente_arq, "\nCidade: %s", cadastroPaciente.enderecoPaciente.cidade);
+    fprintf(paciente_arq, "\nEstado: %s", cadastroPaciente.enderecoPaciente.estado);
+    fprintf(paciente_arq, "\nCep: %d", cadastroPaciente.enderecoPaciente.cep);
+    fprintf(paciente_arq, "\nData de diagnostico: %d/%d/%d", cadastroPaciente.dataDiagnosticoPaciente.dia, cadastroPaciente.dataDiagnosticoPaciente.mes, cadastroPaciente.dataDiagnosticoPaciente.ano);
+    fprintf(paciente_arq, "\nDiabetes: %s", cadastroPaciente.comorbidadePaciente.diabetes);
+    fprintf(paciente_arq, "\nObesidade: %s", cadastroPaciente.comorbidadePaciente.obesidade);
+    fprintf(paciente_arq, "\nHipertensao: %s", cadastroPaciente.comorbidadePaciente.hipertensao);
+    fprintf(paciente_arq, "\nTuberculose: %s", cadastroPaciente.comorbidadePaciente.tuberculose);
+    fprintf(paciente_arq, "\nOutra comorbidade: %s\n", cadastroPaciente.comorbidadePaciente.casoTemOutro);
+
+
+    fclose(paciente_arq);
+  }
+    int validarIdade = cadastroPaciente.nascimentoPaciente.ano;
+  if(validarIdade != 0){
+
+    time_t agora;
+    int anoAtual;
+
+    agora = time(NULL);
+      struct tm tm = *localtime(&agora);
+      anoAtual = tm.tm_year + 1900;
+        int validar = anoAtual - validarIdade;
+    if(validar > 65){
+        fprintf(paciente_arq_risco, "\nData de nascimento: %d/%d/%d\n", cadastroPaciente.nascimentoPaciente.dia, cadastroPaciente.nascimentoPaciente.mes, cadastroPaciente.nascimentoPaciente.ano);
+        fprintf(paciente_arq_risco, "Cep: %d\n", cadastroPaciente.enderecoPaciente.cep);
+        fclose(paciente_arq_risco);
+
+        getchar();
+        system("cls");
+        printf("Realizado a atualizacao do cadastro"); DataCadastroPacienete();
+        getchar();
+        getchar();
+        system("cls");
+        Menu();
+    }
+    else{
+     getchar();
+     system("cls");
+     printf("Realizado a atualizacao do cadastro"); DataCadastroPacienete();
+     getchar();
+     getchar();
+     system("cls");
+     Menu();
+    }
+  }
+}
+
+
+
+void DataCadastroPacienete( int argc, char * argv[] )
+{
+    time_t agora;
+    char datahora[100];
+    int num;
+
+    agora = time(NULL);
+    strftime( datahora, sizeof(datahora), "%d.%m.%Y - %H:%M:%S", localtime( &agora ) );
+
+    printf( "Data/Hora: %s\n", datahora );
+}
